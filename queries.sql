@@ -1,34 +1,31 @@
 CREATE TABLE usuario (
     id BIGINT PRIMARY KEY,
     email VARCHAR(100),
-    senha VARCHAR(100),
-    FOREIGN KEY (id) REFERENCES atleta(usuario),
-    FOREIGN KEY (id) REFERENCES cavalo(usuario),
-    FOREIGN KEY (id) REFERENCES entidade(usuario),
+    senha VARCHAR(100)
 );
 
 CREATE TABLE atleta (
     id BIGINT PRIMARY KEY,
     usuario BIGINT,
     nome VARCHAR(100),
-    nascimento date,
+    nascimento DATE,
     documento VARCHAR(100),
-    FOREIGN KEY (id) REFERENCES inscricao(atleta),
+    FOREIGN KEY (usuario) REFERENCES usuario(id)
 );
 
 CREATE TABLE cavalo (
     id BIGINT PRIMARY KEY,
     usuario BIGINT,
     nome VARCHAR(100),
-    FOREIGN KEY (id) REFERENCES inscricao(cavalo),
+    FOREIGN KEY (usuario) REFERENCES usuario(id)
 );
 
 CREATE TABLE entidade (
-    id VARCHAR(100) PRIMARY KEY,
+    id BIGINT PRIMARY KEY,
     usuario BIGINT,
     nome VARCHAR(100),
     endereco VARCHAR(300),
-    FOREIGN KEY (id) REFERENCES evento(entidade),
+    FOREIGN KEY (usuario) REFERENCES usuario(id)
 );
 
 CREATE TABLE evento (
@@ -36,10 +33,28 @@ CREATE TABLE evento (
     entidade BIGINT,
     nome VARCHAR(150),
     descricao VARCHAR(400),
-    inicio date,
-    fim date,
-    FOREIGN KEY (id) REFERENCES dia(evento),
-    FOREIGN KEY (id) REFERENCES inscricao(evento)
+    inicio DATE,
+    fim DATE,
+    FOREIGN KEY (entidade) REFERENCES entidade(id)
+);
+
+CREATE TABLE dia (
+    id BIGINT PRIMARY KEY,
+    evento BIGINT,
+    data DATE,
+    FOREIGN KEY (evento) REFERENCES evento(id)
+);
+
+CREATE TABLE altura (
+    id BIGINT PRIMARY KEY,
+    dia BIGINT,
+    altura VARCHAR(30),
+    FOREIGN KEY (dia) REFERENCES dia(id)
+);
+
+CREATE TABLE categoria (
+    id BIGINT PRIMARY KEY,
+    nome VARCHAR(100)
 );
 
 CREATE TABLE inscricao (
@@ -49,23 +64,11 @@ CREATE TABLE inscricao (
     dia BIGINT,
     evento BIGINT,
     altura BIGINT,
-    categoria BIGINT
-    FOREIGN KEY (id) REFERENCES altura(id),
-    FOREIGN KEY (id) REFERENCES categoria(id),
+    categoria BIGINT,
+    FOREIGN KEY (atleta) REFERENCES atleta(id),
+    FOREIGN KEY (cavalo) REFERENCES cavalo(id),
+    FOREIGN KEY (dia) REFERENCES dia(id),
+    FOREIGN KEY (evento) REFERENCES evento(id),
+    FOREIGN KEY (altura) REFERENCES altura(id),
+    FOREIGN KEY (categoria) REFERENCES categoria(id)
 );
-
-CREATE TABLE dia (
-    id BIGINT PRIMARY KEY,
-    evento BIGINT,
-    data date,
-    FOREIGN KEY (id) REFERENCES inscricao(dia),
-    FOREIGN KEY (id) REFERENCES altura(dia),
-);
-
-CREATE TABLE altura (
-    id BIGINT PRIMARY KEY,
-    dia BIGINT,
-    altura VARCHAR(30),
-    FOREIGN KEY (id) REFERENCES categoria(altura),
-);
-
